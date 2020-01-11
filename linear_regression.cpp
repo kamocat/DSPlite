@@ -39,7 +39,7 @@ float Regression::GetSlope(void){
     a[2] = a[3] * det; // using a[2] as tmp
     a[3] = a[0] * det;
     a[0] = a[2]; // done using as tmp
-    a[1] = a[1] * det; 
+    a[1] = a[1] * (-det); 
     a[2] = a[1];
     // Third: dot product of a and b
     offset = a[0]*b0 + a[2]*b1;
