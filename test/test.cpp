@@ -1,6 +1,5 @@
 //test suite
 #include "../LinearRegression.cpp"
-#include "../RunningAverage.cpp"
 #include "../IIR.h"
 #include "../Filters.h"
 #include <iostream>
@@ -8,7 +7,6 @@
 #include <cmath>
 
 void TestLinearRegression(void);
-void TestRunningAverage(void);
 void TestIIR(void);
 
 int main( int argc, char ** argv){
@@ -24,28 +22,6 @@ void TestIIR(void){
     for( int i = 0; i < size; ++i){
         std::cout<<f.Process(i%2)<<" ";
     }
-}
-
-void TestRunningAverage(void){
-    std::cout<<"Testing Running Average... ";
-    int size = 10;
-    RunningAverage run_avg(size);
-    // Make an array of random numbers
-    float num;
-    float sum = 0;
-    for( int i = 0; i < size; ++i ){
-        num = i+1;
-        float tmp = run_avg.Append(num);
-        std::cout<<tmp<<", ";
-        sum += num;
-    }
-    sum /= size;
-    if( sum == run_avg.Average() ){
-        std::cout<<"Success!";
-    } else {
-        std::cout<<"Failure. "<<sum<<" vs "<<run_avg.Average();
-    }
-    std::cout<<std::endl;
 }
 
 void TestLinearRegression(void){

@@ -7,13 +7,14 @@ I am assuming that your Arduino either has a 1-cycle floating-point multiply (li
 I am also assuming that you are sampling data at a fixed rate.
 
 ## What this includes
-- Slope-finding methods
-  - Linear Regression
-  - Average of differences
-- Signal Smoothing
-  - Running Average
-  - Savitsky-Golay (ToDo)
-  - Chebyshev low-pass filter (ToDo)
+- Linear Regression
+- Finite Impulse Response filtering
+- Infinite Impuslse Response filtering
+- Python script to design filters (ToDo)
+  - Chebyshev
+  - Bessel
+  - Butterworth
+- Savitsky-Golay (ToDo)
 
 ## Not included
 - Fourier Transforms (FFT)
