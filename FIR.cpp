@@ -1,7 +1,8 @@
 #include "FIR.h"
 
 FIRfilter::FIRfilter(int length){
-    for(int j = 0; length; length=length>>1);
+    int j;
+    for(j = 0; length; length=length>>1);
     maxlen = 2<<j;
     mask = maxlen-1;
     data = new float[length];
@@ -20,12 +21,13 @@ void FIRfilter::Append(float sample){
         ++len;
 }
 
-float FIRfilter::convolve(float * h, int length){
+float FIRfilter::Convolve(float * h, int length){
     int m = (length<len)?length:len;
     int k = i + 1;
     float sum = 0;
     // Convolve with the recorded data
-    for( int j = 0; j < m; ){
+    int j;
+    for( j = 0; j < m; ){
         sum += h[j++]*data[--k];
         k &= mask;
     }
@@ -36,6 +38,6 @@ float FIRfilter::convolve(float * h, int length){
     return sum;
 }
 
-void FIRfilter::~FIRfilter(void){
+FIRfilter::~FIRfilter(void){
     delete data;
 }

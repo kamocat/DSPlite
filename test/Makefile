@@ -1,3 +1,3 @@
 all:
-	g++ test.cpp -o test.out
+	g++ test.cpp ../FIR.cpp -ggdb -o test.out
 	./test.out

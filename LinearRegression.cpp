@@ -1,4 +1,4 @@
-#include "linear_regression.h"
+#include "LinearRegression.h"
 
 void Regression::Reset(void){
     slope = 0;
