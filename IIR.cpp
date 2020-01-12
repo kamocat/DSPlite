@@ -25,8 +25,8 @@ float IIRfilter::Process(float sample){
 void IIRfilter::Reset(float val=0.){
     float a = 0;
     // Find the total gain of the denominator.
-    for(i = 0; i < len; ++i){
-        a += h[i][1];
+    for(i = 1; i < (2*len); i+=1){
+        a += h[i];
     }
     // Calculate the steady-state condition of a one-element feedback
     // steady = input + steady*(a-1) ===> steady = input / (2-a)

@@ -11,7 +11,7 @@ public:
     float Process(float sample);
     ~IIRfilter(void);
 private:
-    float * h; // Interlieved numerator/denominator coeffecients
+    const float * h; // Interlieved numerator/denominator coeffecients
     uint8_t i, len;
     float * x;
 };

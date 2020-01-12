@@ -1,15 +1,29 @@
 //test suite
 #include "../LinearRegression.cpp"
 #include "../RunningAverage.cpp"
+#include "../IIR.h"
+#include "../Filters.h"
 #include <iostream>
+#include <vector>
+#include <cmath>
 
 void TestLinearRegression(void);
 void TestRunningAverage(void);
+void TestIIR(void);
 
 int main( int argc, char ** argv){
-    TestLinearRegression();
-    TestRunningAverage();
+    //TestLinearRegression();
+    //TestRunningAverage();
+    TestIIR();
     return 0;
+}
+
+void TestIIR(void){
+    IIRfilter f(bessel1, sizeof(bessel1));
+    int size = 10;
+    for( int i = 0; i < size; ++i){
+        std::cout<<f.Process(i%2)<<" ";
+    }
 }
 
 void TestRunningAverage(void){
@@ -20,8 +34,9 @@ void TestRunningAverage(void){
     float num;
     float sum = 0;
     for( int i = 0; i < size; ++i ){
-        num = 1;
-        run_avg.Append(num);
+        num = i+1;
+        float tmp = run_avg.Append(num);
+        std::cout<<tmp<<", ";
         sum += num;
     }
     sum /= size;
