@@ -1,6 +1,7 @@
 //test suite
 #include "../LinearRegression.cpp"
 #include "../IIR.h"
+#include "../FIR.h"
 #include "../Filters.h"
 #include <iostream>
 #include <fstream>
@@ -9,6 +10,7 @@
 
 void TestLinearRegression(void);
 void TestIIR(void);
+void TestFIR(void);
 
 int main( int argc, char ** argv){
     //TestLinearRegression();
@@ -18,7 +20,19 @@ int main( int argc, char ** argv){
 }
 
 void TestIIR(void){
-    IIRfilter filter(butter_50hz, sizeof(butter_50hz));
+    IIRfilter filter(exp_decay2, sizeof(exp_decay2));
+    int size = 20;
+    std::ofstream log;
+    log.open("impulse.csv");
+    log<<filter.Process(100) << std::endl; // Impulse
+    for( int i = 1; i < size; ++i){
+        log<<filter.Process(0) << std::endl;
+    }
+    log.close();
+}
+
+void TestFIR(void){
+    FIRfilter filter(exp_decay, sizeof(exp_decay));
     int size = 20;
     std::ofstream log;
     log.open("impulse.csv");

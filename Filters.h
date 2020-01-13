@@ -17,3 +17,13 @@ Type: lowpass
 Corner Frequency: 50Hz
 */
 const float butter_50hz[] = {0.13672873599731955, 1.0,0.13672873599731955, -0.726542528005361};
+
+/* Finite Impulse Response Filter
+ * 
+ */
+const float exp_decay[] = {1, .5, .25, .125, .0625, .0313, .0155, .00775, .00387};
+
+/* IIR
+ * Handmade exponential - should match above
+ */
+const float exp_decay2[] = {1, 1, 0, .5};
