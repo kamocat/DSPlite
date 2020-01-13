@@ -3,35 +3,30 @@
 #include "../IIR.h"
 #include "../Filters.h"
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <cmath>
 
 void TestLinearRegression(void);
-float TestIIR(float);
+void TestIIR(void);
 
 int main( int argc, char ** argv){
     //TestLinearRegression();
     //TestRunningAverage();
-    for( int i = 10; i <= 1000; i+=10 ){
-        std::cout<<"Attenuation at "<<i<<" Hz: "<<TestIIR(i)<<"dB"<<std::endl;
-    }
+    TestIIR();
     return 0;
 }
 
-float TestIIR(float freq){
+void TestIIR(void){
     IIRfilter filter(butter_50hz, sizeof(butter_50hz));
-    float in_rms = 0;
-    float rms = 0;
-    float mean = 0;
-    int size = 10000;
-    freq = freq / 1000.;
-    for( int i = 0; i < size; ++i){
-        float x = sqrt(2)*sin(freq * i * 6.28);
-        float y = filter.Process(x);
-        rms += y*y;
+    int size = 20;
+    std::ofstream log;
+    log.open("impulse.csv");
+    log<<filter.Process(100) << std::endl; // Impulse
+    for( int i = 1; i < size; ++i){
+        log<<filter.Process(0) << std::endl;
     }
-    rms = sqrt(rms/size);
-    return 10*log10(rms);
+    log.close();
 }
 
 void TestLinearRegression(void){
