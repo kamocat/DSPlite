@@ -12,6 +12,13 @@ def save_IIR(f, filtername, coef ):
   f.write(F'{coef[0][len]}, {coef[1][len]}}};\n')
   f.close()
 
+def test_filter( coef ):
+  import matplotlib.pyplot as plt
+  a = np.zeros(20);
+  a[0]=100;
+  b = sig.lfilter(coef[0], coef[1], a)
+  plt.plot(b)
+  plt.show()
 
 def cheby():
   # Example for Chebyshev type 1 filter
@@ -45,7 +52,7 @@ def butterworth():
   sample_frequency = 1e3
   corner = 50
   ba = sig.butter(N=order, Wn=corner, btype=btype, fs=sample_frequency, )
-  
+  test_filter(ba)
   #Open the header file to save this in
   f = open('Filters.h', 'a')
   
