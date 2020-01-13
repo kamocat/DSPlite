@@ -15,6 +15,7 @@ float IIRfilter::Process(float sample){
         in  += h[j++] * x[--i];
         out += h[j++] * x[i];
     }
+    --i;
     // h[1] might not be 1 if the filter wasn't normalized
     in  += sample * h[1]; 
     x[i] = sample;

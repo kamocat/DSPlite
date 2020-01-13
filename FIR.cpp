@@ -1,43 +1,51 @@
 #include "FIR.h"
 
-FIRfilter::FIRfilter(int length){
-    int j;
-    for(j = 0; length; length=length>>1);
-    maxlen = 2<<j;
-    mask = maxlen-1;
-    data = new float[length];
-    Reset();
-}
-
-void FIRfilter::Reset(void){
-    len = 0;
+FIRfilter::FIRfilter(const float * coef, uint8_t size){
+    len = size / sizeof(float);
+    h = coef;
+    x = new float[len];
+    for(i = 0; i < len; ++i){
+        x[i]=0;
+    }
     i = 0;
 }
 
-void FIRfilter::Append(float sample){
-    data[i]=sample;
-    i = mask & (i+1);
-    if( len < maxlen )
-        ++len;
-}
-
-float FIRfilter::Convolve(float * h, int length){
-    int m = (length<len)?length:len;
-    int k = i + 1;
-    float sum = 0;
-    // Convolve with the recorded data
-    int j;
-    for( j = 0; j < m; ){
-        sum += h[j++]*data[--k];
-        k &= mask;
+FIRfilter::FIRfilter(const FIRfilter &copy){
+    len = copy.len;
+    h = copy.h;
+    x = new float[len];
+    for(i = 0; i < len; ++i){
+        x[i]=0;
     }
-    // Extend the tail of the data
-    for(; j<length;){
-        sum += h[j++]*data[k];
-    }
-    return sum;
+    i = 0;
 }
 
 FIRfilter::~FIRfilter(void){
-    delete data;
+    delete x;
+    // Assume h is constant and doesn't need deletion
+}
+
+void FIRfilter::Reset(float val=0.){
+    // Reset the internal state
+    for(i = 0; i < len; ++i){
+        x[i]=val;
+    }
+    i = 0;
+}
+
+float FIRfilter::Process(float sample){
+    float out = 0;
+    uint8_t j = 1;
+    ++i;
+    while(i){
+        out += h[j++] * x[--i];
+    }
+    i = len;
+    while(j<len){
+        out += h[j++] * x[--i];
+    }
+    --i;
+    x[i] = sample;
+    out += sample*h[0];
+    return out;
 }

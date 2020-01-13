@@ -12,14 +12,14 @@ float TestIIR(float);
 int main( int argc, char ** argv){
     //TestLinearRegression();
     //TestRunningAverage();
-    std::cout<<"Attenuation at 10 Hz: "<<TestIIR(10)<<"dB"<<std::endl;
-    std::cout<<"Attenuation at 100 Hz: "<<TestIIR(100)<<"dB"<<std::endl;
-    std::cout<<"Attenuation at 1 kHz: "<<TestIIR(1000)<<"dB"<<std::endl;
+    for( int i = 10; i <= 1000; i+=10 ){
+        std::cout<<"Attenuation at "<<i<<" Hz: "<<TestIIR(i)<<"dB"<<std::endl;
+    }
     return 0;
 }
 
 float TestIIR(float freq){
-    IIRfilter filter(cheby1_100Hz, sizeof(cheby1_100Hz));
+    IIRfilter filter(butter_50hz, sizeof(butter_50hz));
     float in_rms = 0;
     float rms = 0;
     float mean = 0;

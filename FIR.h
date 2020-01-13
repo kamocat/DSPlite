@@ -1,19 +1,18 @@
 #ifndef DSPLITE_FIR_FILTER
 #define DSPLITE_FIR_FILTER
 
-// Finite Impulse Response filter template
+#include <inttypes.h>
 
 class FIRfilter{
 public:
-    FIRfilter(int length);
-    // No copy constructor - it would duplicate the allocated memory
-    void Reset(void);
-    float Convolve(float * h, int len);
-    void Append(float sample);
+    FIRfilter(const float * coeffecients, uint8_t size);
+    FIRfilter(const FIRfilter &copy);
+    void Reset(float val);
+    float Process(float sample);
     ~FIRfilter(void);
-protected:
-    float * data;
-    int i, len, maxlen, mask;
+private:
+    const float * h;
+    uint8_t i, len;
+    float * x;
 };
-
 #endif
