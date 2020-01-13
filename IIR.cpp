@@ -39,7 +39,7 @@ void IIRfilter::Reset(float val=0.){
 }
 
 IIRfilter::IIRfilter(const float * coef, uint8_t size){
-    len = size / 2;
+    len = size / (2*sizeof(float));
     h = coef;
     x = new float[len];
     for(i = 0; i < len; ++i){

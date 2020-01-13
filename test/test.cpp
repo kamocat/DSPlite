@@ -7,21 +7,31 @@
 #include <cmath>
 
 void TestLinearRegression(void);
-void TestIIR(void);
+float TestIIR(float);
 
 int main( int argc, char ** argv){
     //TestLinearRegression();
     //TestRunningAverage();
-    TestIIR();
+    std::cout<<"Attenuation at 10 Hz: "<<TestIIR(10)<<"dB"<<std::endl;
+    std::cout<<"Attenuation at 100 Hz: "<<TestIIR(100)<<"dB"<<std::endl;
+    std::cout<<"Attenuation at 1 kHz: "<<TestIIR(1000)<<"dB"<<std::endl;
     return 0;
 }
 
-void TestIIR(void){
-    IIRfilter f(bessel1, sizeof(bessel1));
-    int size = 10;
+float TestIIR(float freq){
+    IIRfilter filter(cheby1_100Hz, sizeof(cheby1_100Hz));
+    float in_rms = 0;
+    float rms = 0;
+    float mean = 0;
+    int size = 10000;
+    freq = freq / 1000.;
     for( int i = 0; i < size; ++i){
-        std::cout<<f.Process(i%2)<<" ";
+        float x = sqrt(2)*sin(freq * i * 6.28);
+        float y = filter.Process(x);
+        rms += y*y;
     }
+    rms = sqrt(rms/size);
+    return 10*log10(rms);
 }
 
 void TestLinearRegression(void){
