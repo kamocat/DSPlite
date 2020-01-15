@@ -41,7 +41,6 @@ def cheby():
   
   # Write the filter coeffecients
   save_IIR(f, 'cheby1_100hz', ba )
-  f.close()
 
 def butterworth():
   # Example for Butterworth
@@ -62,7 +61,6 @@ Type: {btype}\nCorner Frequency: {corner}Hz\n*/""")
   
   # Write the filter coeffecients
   save_IIR(f, 'butter_50hz', ba )
-  f.close()
 
 def experiment():
   # This is for testing custom filters
@@ -77,8 +75,31 @@ def experiment():
   
   # Write the filter coeffecients
   save_IIR(f, 'experiment', ba )
-  f.close()
+
+def savgol():
+  # Example for Savitzky-Golay
+  # You can view documentation at https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_coeffs.html
+  filter_type = 'Savitsky-Golay'
+  window = 17
+  order = 3
+  dn = 1
+  coef = sig.savgol_coeffs(window, order, dn)
+  #Open the header file to save this in
+  f = open('Filters.h', 'a')
   
+  # Write the parameters in a comment
+  f.write(F"""\n/*  Finite Impulse Response Filter\n{filter_type}
+Window: {window}\nOrder: {order}\nDerivative: {dn}\n*/""")
+  
+  # Write the filter coeffecients
+  f.write(F'\nconst float savgol[] = {{')
+  len = coef.shape[0]-1
+  for i in range(len):
+    f.write(F'{coef[i]},')
+  f.write(F'{coef[len]}}};\n')
+  f.close()
+
 #butterworth()
-cheby()
+#cheby()
 #experiment()
+savgol()

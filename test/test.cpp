@@ -15,7 +15,7 @@ void TestFIR(void);
 int main( int argc, char ** argv){
     //TestLinearRegression();
     //TestRunningAverage();
-    TestIIR();
+    TestFIR();
     return 0;
 }
 
@@ -34,8 +34,8 @@ void TestIIR(void){
 }
 
 void TestFIR(void){
-    FIRfilter filter(exp_decay, sizeof(exp_decay));
-    int size = 20;
+    FIRfilter filter(savgol, sizeof(savgol));
+    int size = 30;
     std::ofstream log;
     log.open("impulse.csv");
     log<<filter.Process(100) << std::endl; // Impulse

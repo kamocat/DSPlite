@@ -1,7 +1,7 @@
 #include "FIR.h"
 
 FIRfilter::FIRfilter(const float * coef, uint8_t size){
-    len = size / sizeof(float);
+    len = (size / sizeof(float))-1;
     h = coef;
     x = new float[len];
     for(i = 0; i < len; ++i){
@@ -36,15 +36,18 @@ void FIRfilter::Reset(float val=0.){
 float FIRfilter::Process(float sample){
     float out = 0;
     uint8_t j = 1;
-    ++i;
-    while(i){
-        out += h[j++] * x[--i];
+    uint8_t k;
+    for(k=i; k<len; --k){
+        out += h[j++] * x[k];
     }
-    i = len;
-    while(j<len){
-        out += h[j++] * x[--i];
+    for(k=len-1; k > i; --k){
+        out += h[j++] * x[k];
     }
-    --i;
+    if( i == (len-1) ){
+        i = 0;
+    } else {
+        ++i;
+    }
     x[i] = sample;
     out += sample*h[0];
     return out;
