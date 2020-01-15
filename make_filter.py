@@ -8,8 +8,8 @@ def save_IIR(f, filtername, coef ):
   f.write(F'\nconst float {filtername}[] = {{')
   len = np.shape(coef)[1]-1
   for i in range(len):
-    f.write(F'{coef[0][i]}, {coef[1][i]},')
-  f.write(F'{coef[0][len]}, {coef[1][len]}}};\n')
+    f.write(F'{coef[1][i]}, {coef[0][i]},')
+  f.write(F'{coef[1][len]}, {coef[0][len]}}};\n')
   f.close()
 
 def test_filter( coef ):
@@ -31,7 +31,7 @@ def cheby():
   corner_frequencies = 100
   ba = sig.cheby1(N=order, rp=ripple , Wn=corner_frequencies, 
                   btype=btype, fs=sample_frequency, )
-  
+  test_filter(ba)
   #Open the header file to save this in
   f = open('Filters.h', 'a')
   
@@ -47,7 +47,7 @@ def butterworth():
   # Example for Butterworth
   # You can view other filters at https://docs.scipy.org/doc/scipy/reference/signal.html#matlab-style-iir-filter-design
   filter_type = 'Butterworth'
-  order = 1
+  order = 2
   btype = 'lowpass'
   sample_frequency = 1e3
   corner = 50
@@ -65,3 +65,4 @@ Type: {btype}\nCorner Frequency: {corner}Hz\n*/""")
   f.close()
   
 butterworth()
+#cheby()

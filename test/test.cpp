@@ -24,9 +24,11 @@ void TestIIR(void){
     int size = 20;
     std::ofstream log;
     log.open("impulse.csv");
-    log<<filter.Process(100) << std::endl; // Impulse
+    float y = filter.Process(100);// Impulse
+    log<<y << std::endl; 
     for( int i = 1; i < size; ++i){
-        log<<filter.Process(0) << std::endl;
+        y = filter.Process(0);
+        log<<y<< std::endl;
     }
     log.close();
 }
