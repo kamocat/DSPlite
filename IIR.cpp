@@ -4,18 +4,23 @@ float IIRfilter::Process(float sample){
     float in  = 0;
     float out = 0;
     uint8_t j = 2;
-    ++i;
-    while(i){
-        in  -= h[j++] * x[--i];
-        out += h[j++] * x[i];
+    uint8_t k;
+    uint8_t len2 = len * 2 + 2;
+    
+    for(k = i; k < len; --k){
+        in  -= h[j++] * x[k];
+        out += h[j++] * x[k];
     }
-    uint8_t len2 = len * 2;
-    i = len;
-    while(j<len2){
-        in  -= h[j++] * x[--i];
-        out += h[j++] * x[i];
+    
+    for(k=len-1; k > i; --k){
+        in  -= h[j++] * x[k];
+        out += h[j++] * x[k];
     }
-    --i;
+    if( i == (len-1) ){
+        i = 0;
+    } else {
+        ++i;
+    }
     // h[0] might not be 1 if the filter wasn't normalized
     in  += sample * h[0]; 
     x[i] = in;

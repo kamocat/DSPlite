@@ -20,7 +20,7 @@ int main( int argc, char ** argv){
 }
 
 void TestIIR(void){
-    IIRfilter filter(butter_50hz, sizeof(butter_50hz));
+    IIRfilter filter(cheby1_100hz, sizeof(cheby1_100hz));
     int size = 20;
     std::ofstream log;
     log.open("impulse.csv");

@@ -63,6 +63,22 @@ Type: {btype}\nCorner Frequency: {corner}Hz\n*/""")
   # Write the filter coeffecients
   save_IIR(f, 'butter_50hz', ba )
   f.close()
+
+def experiment():
+  # This is for testing custom filters
+  # Probably only used for debugging
+  ba = ((1, 0, 0, 0),(1,0,0,-.5))
+  test_filter(ba)
+  #Open the header file to save this in
+  f = open('Filters.h', 'a')
   
-butterworth()
-#cheby()
+  # Write the parameters in a comment
+  f.write(F"\n/*  Experiment filter*/")
+  
+  # Write the filter coeffecients
+  save_IIR(f, 'experiment', ba )
+  f.close()
+  
+#butterworth()
+cheby()
+#experiment()
