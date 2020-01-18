@@ -1,4 +1,4 @@
 all:
-	g++ test.cpp ../FIR.cpp ../IIR.cpp -ggdb -o test.out
+	g++ test.cpp ../FIR.cpp ../IIR.cpp ../LinearRegression.cpp -ggdb -o test.out
 	./test.out
 	gnuplot plot_settings

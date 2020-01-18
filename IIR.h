@@ -9,6 +9,7 @@ public:
     IIRfilter(const IIRfilter &copy);
     void Reset(float val);
     float Process(float sample);
+    float Stability(void);
     ~IIRfilter(void);
 private:
     const float * h; // Interlieved numerator/denominator coeffecients

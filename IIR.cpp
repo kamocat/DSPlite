@@ -28,15 +28,21 @@ float IIRfilter::Process(float sample){
     return out;
 }
 
-void IIRfilter::Reset(float val=0.){
+float IIRfilter::Stability(void){
     float a = 0;
-    // Find the total gain of the denominator.
-    for(i = 1; i < (2*len); i+=1){
-        a += h[i];
+    // Find the total gain of the feedback.
+    for(i = 2; i < (2*len); i+=2){
+        a -= h[i];
     }
+    return a;
+}
+
+/** FIXME: I don't think this works properly */
+void IIRfilter::Reset(float val=0.){
+    float a = Stability();
     // Calculate the steady-state condition of a one-element feedback
-    // steady = input + steady*(a-1) ===> steady = input / (2-a)
-    val = val / (2-a);
+    // steady = input + steady*(a) ===> steady = input / (1-a)
+    val = val / (1-a);
     // Reset the internal state
     for(i = 0; i < len; ++i){
         x[i]=val;

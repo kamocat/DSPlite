@@ -1,8 +1,6 @@
 //test suite
-#include "../LinearRegression.cpp"
-#include "../IIR.h"
-#include "../FIR.h"
-#include "../Filters.h"
+#include "../DSPlite.h"
+#include "Filters.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -15,7 +13,7 @@ void TestFIR(void);
 int main( int argc, char ** argv){
     //TestLinearRegression();
     //TestRunningAverage();
-    TestFIR();
+    TestIIR();
     return 0;
 }
 
@@ -31,6 +29,13 @@ void TestIIR(void){
         log<<y<< std::endl;
     }
     log.close();
+    float n = 5;
+    filter.Reset(5);
+    std::cout<<"Reset to "<<n<<std::endl<<"Results: ";
+    for( int i = 0; i < 3; ++i ){
+        std::cout<<filter.Process(n)<<" ";
+    }
+    std::cout<<std::endl;
 }
 
 void TestFIR(void){
@@ -43,6 +48,13 @@ void TestFIR(void){
         log<<filter.Process(0) << std::endl;
     }
     log.close();
+    float n = 5;
+    filter.Reset(5);
+    std::cout<<"Reset to "<<n<<std::endl<<"Results: ";
+    for( int i = 0; i < 3; ++i ){
+        std::cout<<filter.Process(n)<<" ";
+    }
+    std::cout<<std::endl;
 }
 
 void TestLinearRegression(void){
