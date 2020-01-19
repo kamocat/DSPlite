@@ -3,7 +3,7 @@
 
 void test_ftoa( float x ){
   char buf[15];
-  ftoa(buf, x, 3);
+  ftoa(x, buf, 1, 3);
   std::cout<<x<<" vs "<<buf<<std::endl;
 }
   

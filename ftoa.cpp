@@ -6,7 +6,7 @@
  * buf must be large enough to store 15 bytes
  */
 const int maxp = 7; // max precision
-char * ftoa( char * buf, float x, int precision ){
+char * ftoa( float x, char * buf, int width, int precision ){
   // Catch edge cases
   if( x == (1./0.)){
     strcpy(buf, "Inf");
@@ -21,8 +21,14 @@ char * ftoa( char * buf, float x, int precision ){
     strcpy(buf, "0");
     return buf + 1;
   }
-  if( precision > maxp || precision < 1 )
-    precision = 3;
+  // Validate the input
+  if( width > maxp )
+    width = maxp;
+  if( width < 1 )
+    width = 1;
+  if( (precision+width) > maxp || precision < 0 )
+    precision = maxp - width;
+  // Get the magnitude
   int exp = simple_log10(x);
   if( exp < -30 ){
     x *= 1e30;
@@ -30,11 +36,12 @@ char * ftoa( char * buf, float x, int precision ){
   } else {
     x *= simple_pow10(-exp + maxp);
   }
+  // Convert the mantissa
   long repr = x;
-  char * ptr = dtoa(buf, repr);
+  char * ptr = dtoa(repr, buf);
   //Put a decimal point in the right place
-  int len = (ptr - buf) - 1; // used for correcting exponent
-  ptr = buf + 1;
+  int len = (ptr - buf) - width; // used for correcting exponent
+  ptr = buf + width;
   if( '-' == *buf ){
     ++ptr;
     --len;
@@ -46,7 +53,7 @@ char * ftoa( char * buf, float x, int precision ){
   //Append the exponent
   exp = exp + len - maxp;
   *ptr++ = 'e';
-  ptr = dtoa(ptr, exp);
+  ptr = dtoa(exp, ptr);
   return ptr;
 }
   
@@ -120,7 +127,7 @@ int log10_helper( long x ){
   return 0;
 }
  
-char * dtoa( char * buf, long x ){
+char * dtoa( long x, char * buf ){
   char * ptr = buf;
   if( x < 0 ){
     *ptr++ = '-';

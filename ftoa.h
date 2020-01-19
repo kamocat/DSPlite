@@ -7,14 +7,14 @@
  * Assumes buf can store at least 15 bytes
  * Returns pointer to end of array
  */
-char * ftoa( char * buf, float x, int precision=8);
+char * ftoa( float x, char * buf, int whole=1, int precision=5);
 
 /* Converts a long integer to a character array
  * Doesn't correctly handle LONG_MIN (0x80000000)
  * Assumes buf can store 12 bytes
  * Returns pointer to end of the array
  */ 
-char * dtoa( char * buf, long x );
+char * dtoa( long x, char * buf );
 
 // Gives any integer power of 10 from -127 to 127
 float simple_pow10(int exp);
