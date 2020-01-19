@@ -1,2 +1,2 @@
-plot 'impulse.csv' with linespoints
+plot 'step.csv' with lines
 pause -1

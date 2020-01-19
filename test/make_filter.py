@@ -5,18 +5,46 @@ import scipy.signal as sig
 
 # used for saving IIR filter system
 def save_IIR(f, filtername, coef ):
+  coef = np.float32(coef)
   f.write(F'\nconst float {filtername}[] = {{')
   len = np.shape(coef)[1]-1
   for i in range(len):
-    f.write(F'{coef[1][i]}, {coef[0][i]},')
-  f.write(F'{coef[1][len]}, {coef[0][len]}}};\n')
+    f.write(F'{coef[1][i]!r}, {coef[0][i]!r},')
+  f.write(F'{coef[1][len]!r}, {coef[0][len]!r}}};\n')
+  f.close()
+
+def save_sos(f, filtername, coef ):
+  coef = np.float32(coef)
+  n = np.shape(coef)[0]
+  f.write(F'\nconst struct SOSystem {filtername}[] = {{')
+  for i in range(n):
+    f.write('\n{');
+    for j in range(6):
+      f.write(F'{coef[i][j]!r}')
+      if( j < 5 ):
+        f.write(',')
+      elif( i < (n-1) ):
+        f.write('},')
+      else:
+        f.write('}\n')
+  f.write('};');
   f.close()
 
 def test_filter( coef ):
   import matplotlib.pyplot as plt
-  a = np.zeros(20);
-  a[0]=100;
+  a = np.ones(2000);
+  a *= 100;
+  coef = np.float32(coef)
   b = sig.lfilter(coef[0], coef[1], a)
+  plt.plot(b)
+  plt.show()
+  
+def test_sos( coef ):
+  import matplotlib.pyplot as plt
+  a = np.ones(2000);
+  a *= 100;
+  coef = np.float32(coef)
+  b = sig.sosfilt(coef, a)
   plt.plot(b)
   plt.show()
 
@@ -24,23 +52,22 @@ def cheby():
   # Example for Chebyshev type 1 filter
   # You can view other filters at https://docs.scipy.org/doc/scipy/reference/signal.html#matlab-style-iir-filter-design
   filter_type = 'Chebyshev type 1'
-  order = 8
+  order = 4 # Stability issues on higher-order filters
   ripple = 3
   btype = 'lowpass'
   sample_frequency = 1e3
-  corner_frequencies = 100
-  ba = sig.cheby1(N=order, rp=ripple , Wn=corner_frequencies, 
-                  btype=btype, fs=sample_frequency, )
-  test_filter(ba)
+  corner_frequency = 10
+  sos = sig.cheby1(N=order, rp=ripple , Wn=corner_frequency, 
+                  btype=btype, fs=sample_frequency, output='sos' )
+  test_sos(sos)
   #Open the header file to save this in
   f = open('Filters.h', 'a')
   
   # Write the parameters in a comment
-  f.write(F"""\n/*  Infinte Impulse Response Filter\n{filter_type}\nOrder: {order}
-  Type: {btype}\nRipple: {ripple}\nCorner Frequencies: {corner_frequencies}\n*/""")
+  f.write(F"""\n/* Cascaded Second Order System\n{filter_type}\nOrder: {order}\nType: {btype}\nRipple: {ripple}\nCorner Frequencies: {corner_frequency}\n*/""")
   
   # Write the filter coeffecients
-  save_IIR(f, 'cheby1_100hz', ba )
+  save_sos(f, F'cheby1_{corner_frequency}hz', sos )
 
 def butterworth():
   # Example for Butterworth
@@ -50,31 +77,17 @@ def butterworth():
   btype = 'lowpass'
   sample_frequency = 1e3
   corner = 50
-  ba = sig.butter(N=order, Wn=corner, btype=btype, fs=sample_frequency, )
-  test_filter(ba)
+  sos = sig.butter(N=order, Wn=corner, btype=btype, fs=sample_frequency, output='sos' )
+  test_sos(sos)
   #Open the header file to save this in
   f = open('Filters.h', 'a')
   
   # Write the parameters in a comment
-  f.write(F"""\n/*  Infinte Impulse Response Filter\n{filter_type}\nOrder: {order}
+  f.write(F"""\n/*  Cascaded Second Order System\n{filter_type}\nOrder: {order}
 Type: {btype}\nCorner Frequency: {corner}Hz\n*/""")
   
   # Write the filter coeffecients
-  save_IIR(f, 'butter_50hz', ba )
-
-def experiment():
-  # This is for testing custom filters
-  # Probably only used for debugging
-  ba = ((1, 0, 0, 0),(1,0,0,-.5))
-  test_filter(ba)
-  #Open the header file to save this in
-  f = open('Filters.h', 'a')
-  
-  # Write the parameters in a comment
-  f.write(F"\n/*  Experiment filter*/")
-  
-  # Write the filter coeffecients
-  save_IIR(f, 'experiment', ba )
+  save_sos(f, F'butter_{corner}hz', sos )
 
 def savgol():
   # Example for Savitzky-Golay
@@ -84,6 +97,7 @@ def savgol():
   order = 3
   dn = 1
   coef = sig.savgol_coeffs(window, order, dn)
+  coef = np.float32(coef)
   #Open the header file to save this in
   f = open('Filters.h', 'a')
   
@@ -95,11 +109,10 @@ Window: {window}\nOrder: {order}\nDerivative: {dn}\n*/""")
   f.write(F'\nconst float savgol[] = {{')
   len = coef.shape[0]-1
   for i in range(len):
-    f.write(F'{coef[i]},')
-  f.write(F'{coef[len]}}};\n')
+    f.write(F'{coef[i]!r},')
+  f.write(F'{coef[len]!r}}};\n')
   f.close()
 
-#butterworth()
+butterworth()
 #cheby()
-#experiment()
-savgol()
+#savgol()

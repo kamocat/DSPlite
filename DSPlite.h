@@ -3,6 +3,7 @@
 
 #include "FIR.h"
 #include "IIR.h"
+#include "SOS.h"
 #include "LinearRegression.h"
 
 #endif
