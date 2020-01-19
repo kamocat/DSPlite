@@ -1,27 +1,43 @@
 #include "ftoa.h"
 #include <cmath> // for frexp
+#include <string.h> // for memmove
 
 /* Doesn't check for memory length.
  * buf must be large enough to store 15 bytes
  */
+const int maxp = 7; // max precision
 char * ftoa( char * buf, float x, int precision ){
-  if( precision > 7 || precision < 1 )
-    precision = 7;
-  int exp = simple_log10(x) - precision;
+  char * ptr = buf;
+  if( precision > maxp || precision < 1 )
+    precision = 3;
+  int exp = simple_log10(x);
   if( exp < -30 ){
     x *= 1e30;
-    x *= simple_pow10(-exp-30);
+    x *= simple_pow10(-exp - 30 + maxp);
   } else {
-    x *= simple_pow10(-exp);
+    x *= simple_pow10(-exp + maxp);
   }
   long repr = x;
-  char * ptr = dtoa(buf, repr);
-  //FIXME: Put a decimal point in the right place
+  ptr = dtoa(buf, repr);
+  //Put a decimal point in the right place
+  int len = (ptr - buf) - 1; // used for correcting exponent
+  ptr = buf + 1;
+  if( '-' == *buf ){
+    ++ptr;
+    --len;
+  }
+  memmove(ptr+1, ptr, precision);
+  *ptr++ = '.';
+  // Truncate number to specified precision
+  ptr += precision;
+  //Append the exponent
+  exp = exp + len - maxp;
   *ptr++ = 'e';
   ptr = dtoa(ptr, exp);
   return ptr;
 }
   
+// Only gives an approximate result
 int simple_log10(float x){
   int exp;
   frexp(x, &exp);
@@ -59,7 +75,7 @@ float simple_pow10(int exp){
 /* Helper function to avoid slow division */
 char subn(long &x, long k){
   char a = '0';
-  while( x > k ){
+  while( x >= k ){
     ++a;
     x -= k;
   }
