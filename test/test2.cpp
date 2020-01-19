@@ -11,7 +11,6 @@ void test_ftoa( float x ){
 int main( int argc, char ** argv ){
   float pi = 3.141592;
   float m;
-  /*
   for(m = 1; m > 0.; m/=10){
     test_ftoa( m * pi );
   }
@@ -19,7 +18,6 @@ int main( int argc, char ** argv ){
   for(m = 1; m < 2e38; m*=10){
     test_ftoa( m * pi );
   }
-  */
   for(m = -100; m < 101; m+=1 ){
     test_ftoa(m);
   }

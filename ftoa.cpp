@@ -7,7 +7,20 @@
  */
 const int maxp = 7; // max precision
 char * ftoa( char * buf, float x, int precision ){
-  char * ptr = buf;
+  // Catch edge cases
+  if( x == (1./0.)){
+    strcpy(buf, "Inf");
+    return buf + 3;
+  } else if( x == (-1./0.)){
+    strcpy(buf, "-Inf");
+    return buf + 4;
+  } else if( x == (0./0.)){
+    strcpy(buf, "NaN");
+    return buf + 3;
+  } else if( x == 0. ){
+    strcpy(buf, "0");
+    return buf + 1;
+  }
   if( precision > maxp || precision < 1 )
     precision = 3;
   int exp = simple_log10(x);
@@ -18,7 +31,7 @@ char * ftoa( char * buf, float x, int precision ){
     x *= simple_pow10(-exp + maxp);
   }
   long repr = x;
-  ptr = dtoa(buf, repr);
+  char * ptr = dtoa(buf, repr);
   //Put a decimal point in the right place
   int len = (ptr - buf) - 1; // used for correcting exponent
   ptr = buf + 1;
