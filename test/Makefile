@@ -1,6 +1,10 @@
-all:
+all: build plot
+
+build:
 	g++ test.cpp ../SOS.cpp ../FIR.cpp ../IIR.cpp ../LinearRegression.cpp -ggdb -o filt.out
 	./filt.out
+	
+plot:
 	gnuplot plot_settings
 
 float:

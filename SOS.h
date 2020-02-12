@@ -21,6 +21,7 @@ public:
     float Process(float sample);
     float Stability(void);
     ~SOSfilter(void);
+    friend class ZPK;
 private:
     const struct SOSystem * h; // array of second-order coeffecients
     uint8_t len;
