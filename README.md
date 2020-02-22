@@ -4,18 +4,18 @@ A low-memory library for real-time signal conditioning, made for Arduino and Ada
 ## Why another signal-processing library?
 Many signal-processing libraries focus on FFT and frequency-domain manipulations. Although this is very powerful, it is also computationally intensive and is difficult to do real-time. This computation is doubled if you want to get the signal back to the time-domain.
 
-On the other hand, realtime filtering libraries don't seem to go far enough. Most of them only do first and second-order filters. See my [literature review](https://github.com/kamocat/DSPlite/blob/master/literature_review.md#low-order-filtering)
+On the other hand, realtime filtering libraries don't seem to go far enough. Most of them only do first and second-order filters. See my [literature review](https://github.com/kamocat/DSPlite/blob/master/literature_review.md#low-order-filtering).
 
 There were three notable exceptions:
-[sebnil](https://github.com/sebnil/FIR-filter-Arduino-Library/tree/master/src) and [LeemanGeophysical](https://github.com/LeemanGeophysicalLLC/FIR_Filter_Arduino_Library) both made realtime libraries for finite impulse response filtering, but did not provide any implmentation for the more compact infinite impulse response filtering.
-[tttapa](https://github.com/tttapa/Filters) made a very nice filtering library, but provided no method for creating the filter coeffecients.
+[Sebastian Nilsson](https://github.com/sebnil/FIR-filter-Arduino-Library/tree/master/src) and [Leeman Geophysical LLC](https://github.com/LeemanGeophysicalLLC/FIR_Filter_Arduino_Library) both made realtime libraries for finite impulse response filtering, but did not provide any implmentation for the more compact infinite impulse response filtering.
+[Pieter P.](https://github.com/tttapa/Filters) made a very nice filtering library, opting for creating all the filters at run-time. He has provided an implementation of Butterworth, but not Chebyshev or Elliptic.
 
 ## How to use:
 1. Record the signal that you plan to filter. (Record enough that you capture the big picture. A few thousand samples may be sufficient.)
 2. Decided what you want to do with it:
-  - Remove noise: Use a low-pass filter
-  - Remove DC offset: Use a high-pass filter
-  - Take the derivative? Use Savitsky-Golay
+    - Remove noise: Use a low-pass filter
+    - Remove DC offset: Use a high-pass filter
+    - Take the derivative? Use Savitsky-Golay
 3. Determine the cutoff frequency
 4. Create the filter coeffecients using Python
 5. Test the filter on the captured data
@@ -28,13 +28,13 @@ This library should be installed in your Arduino libraries directory.
 - Linear Regression
 - Finite Impulse Response filtering
 - Infinite Impuslse Response filtering
-  - Direct Form II
-  - Cascaded second-order systems
+    - Direct Form II (most effecient)
+    - Cascaded second-order systems (least numerical errors)
 - Python script to create filter coeffecients
-  - Chebyshev
-  - Butterworth
-  - Elliptic
-  - Savitsky-Golay
+    - Chebyshev
+    - Butterworth
+    - Elliptic
+    - Savitsky-Golay
 - Low-memory implementation: filter coeffecients are stored in program memory
 - Real-time processing: Filter data as you collect it. No need to store arrays of data.
 
@@ -57,8 +57,8 @@ I would like to make a Python program to capture data from the Arduino and help 
 2. Perform an FFT on the data
 3. Display the captured data and the FFT
 4. Design and test the filter (Repeat as necessary)
-  1. Graphically select the frequencies you want to remove
-  2. Design a filter to accomplish this
-  3. Test the filter on the the captured data (display time domain and frequency domain for before and after the filter)
+    1. Graphically select the frequencies you want to remove
+    2. Design a filter to accomplish this
+    3. Test the filter on the the captured data (display time domain and frequency domain for before and after the filter)
 8. Save the filter coeffecients in a header file
 9. Generate a sketch that prints the data and the filtered data (so it can be plotted)
