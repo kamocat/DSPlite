@@ -1,13 +1,39 @@
 # DSPlite
 A low-memory library for real-time signal conditioning, made for Arduino and Adafruit Feather m0
 
+## Why another signal-processing library?
+Most signal-processing libraries focus on FFT and frequency-domain manipulations. Although this is very powerful, it is also computationally intensive and is difficult to do real-time. This computation is doubled if you want to get the signal back to the time-domain.
+  - https://github.com/kosme/arduinoFFT
+  - http://wiki.openmusiclabs.com/wiki/ArduinoFHT
+
+However, filtering libraries don't seem to go far enough. The ones I found only do first and second-order low-pass filters with predefined coeffecients.
+  - https://github.com/jeroendoggen/Arduino-signal-filtering-library
+  - https://github.com/JonHub/Filters
+  - etc
+## How to use:
+1. Record the signal that you plan to filter. (Record enough that you capture the big picture. A few thousand samples may be sufficient.)
+2. Decided what you want to do with it:
+  - Remove noise: Use a low-pass filter
+  - Remove DC offset: Use a high-pass filter
+  - Take the derivative? Use Savitsky-Golay
+3. Determine the cutoff frequency
+4. Create the filter coeffecients using Python
+5. Test the filter on the captured data
+6. Include the filter in the Arduino code
+
+## Installation:
+This library should be installed in your Arduino libraries directory. 
+
 ## Features
 - Linear Regression
 - Finite Impulse Response filtering
 - Infinite Impuslse Response filtering
+  - Direct Form II
+  - Cascaded second-order systems
 - Python script to create filter coeffecients
   - Chebyshev
   - Butterworth
+  - Elliptic
   - Savitsky-Golay
 - Low-memory implementation: filter coeffecients are stored in program memory
 - Real-time processing: Filter data as you collect it. No need to store arrays of data.
@@ -19,9 +45,8 @@ A low-memory library for real-time signal conditioning, made for Arduino and Ada
 - You have examined some of the data you want to filter, and have determined what you want to do with it (remove noise, remove DC offset, find the slope, etc). If you have already tried the filter in post-processing and want to move it the embedded context, even better.
 
 ## Not included
-- Fourier Transforms (FFT)
-- Kalman filtering
-- Resampling
-- Signal generation
-- Peak-detection (Although you could design a filter to do this)
-- Dynamic filter generation. Filters here are designed to be low-memory, which puts them in program storage. This means they must be predefined before you compile.
+- Fourier Transforms (FFT): Use (arduinoFFT)[https://github.com/kosme/arduinoFFT] instead.
+- Resampling: Use a For() loop.
+- Signal generation: Use the math library for sine() or whatever you need.
+- Peak-detection: You can design a filter for local peak detection, but you must know something about the frequency components of the signal.
+- Dynamic filter generation: Filters here are designed to be low-memory, which puts them in flash storage rather than RAM. This means they must be predefined before you compile. The side-effect of this is we can define the filters using Python and test them on captured data to see if they actually do what we want, before deploying them onto a microcontroller.
