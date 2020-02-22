@@ -7,7 +7,7 @@ I used the following search terms:
 
 I excluded projects (non-libaries) and libraries that require external hardware.
 
-# Realtime high-order filtering
+## Realtime high-order filtering
 - https://github.com/tttapa/Filters No script to generate coeffecients
 - https://github.com/sebnil/FIR-filter-Arduino-Library/tree/master/src FIR-only
 - https://github.com/LeemanGeophysicalLLC/FIR_Filter_Arduino_Library FIR-only

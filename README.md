@@ -2,9 +2,9 @@
 A low-memory library for real-time signal conditioning, made for Arduino and Adafruit Feather m0
 
 ## Why another signal-processing library?
-Most signal-processing libraries focus on FFT and frequency-domain manipulations. Although this is very powerful, it is also computationally intensive and is difficult to do real-time. This computation is doubled if you want to get the signal back to the time-domain.
+Many signal-processing libraries focus on FFT and frequency-domain manipulations. Although this is very powerful, it is also computationally intensive and is difficult to do real-time. This computation is doubled if you want to get the signal back to the time-domain.
 
-On the other hand, realtime filtering libraries don't seem to go far enough. Most of them only do first and second-order filters.
+On the other hand, realtime filtering libraries don't seem to go far enough. Most of them only do first and second-order filters. See my [literature review](https://github.com/kamocat/DSPlite/blob/master/literature_review.md#low-order-filtering)
 
 There were three notable exceptions:
 [sebnil](https://github.com/sebnil/FIR-filter-Arduino-Library/tree/master/src) and [LeemanGeophysical](https://github.com/LeemanGeophysicalLLC/FIR_Filter_Arduino_Library) both made realtime libraries for finite impulse response filtering, but did not provide any implmentation for the more compact infinite impulse response filtering.
