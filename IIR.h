@@ -5,16 +5,16 @@
 
 class IIRfilter{
 public:
-    IIRfilter(const float * coeffecients, uint8_t size);
+    IIRfilter(const double * coeffecients, uint8_t size);
     IIRfilter(const IIRfilter &copy);
-    void Reset(float val);
-    float Process(float sample);
-    float Stability(void);
+    void Reset(double val);
+    double Process(double sample);
+    double Stability(void);
     ~IIRfilter(void);
 private:
-    const float * h; // Interlieved numerator/denominator coeffecients
+    const double * h; // Interlieved numerator/denominator coeffecients
     uint8_t i, len;
-    float * x;
+    double * x;
 };
 
 #endif

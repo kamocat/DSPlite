@@ -5,14 +5,14 @@
 
 class FIRfilter{
 public:
-    FIRfilter(const float * coeffecients, uint8_t size);
+    FIRfilter(const double * coeffecients, uint8_t size);
     FIRfilter(const FIRfilter &copy);
-    void Reset(float val);
-    float Process(float sample);
+    void Reset(double val);
+    double Process(double sample);
     ~FIRfilter(void);
 private:
-    const float * h;
+    const double * h;
     uint8_t i, len;
-    float * x;
+    double * x;
 };
 #endif

@@ -20,22 +20,22 @@ Regression::Regression(const Regression &copy){
     b1 = copy.b1;
 }
 
-void Regression::Append(float sample){
+void Regression::Append(double sample){
     b0 += sample;
     b1 += sample * n;
     ++n;
 }
 
-float Regression::GetSlope(void){
+double Regression::GetSlope(void){
     // Solve using the closed-form solution of linear regression
     // First: Make a 2x2 matrix
-    float a[4];
+    double a[4];
     a[0] = n;
     a[1] = a[0] * (a[0]-1) * 0.5; // sum of 1:n
     a[2] = a[1];
     a[3] = a[1] * (a[0]-0.5) * (2./3.); // sum of squares of 1:n
     // Second: Invert the matrix
-    float det = 1. / (a[0]*a[3] - a[1]*a[1]);
+    double det = 1. / (a[0]*a[3] - a[1]*a[1]);
     a[2] = a[3] * det; // using a[2] as tmp
     a[3] = a[0] * det;
     a[0] = a[2]; // done using as tmp
@@ -47,7 +47,7 @@ float Regression::GetSlope(void){
     return slope;
 }
 
-float Regression::GetOffset(void){
+double Regression::GetOffset(void){
     // Assume you already called slope()
     return offset;
 }

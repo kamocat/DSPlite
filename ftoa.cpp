@@ -6,7 +6,7 @@
  * buf must be large enough to store 15 bytes
  */
 const int maxp = 7; // max precision
-char * ftoa( float x, char * buf, int width, int precision ){
+char * ftoa( double x, char * buf, int width, int precision ){
   // Catch edge cases
   if( x == (1./0.)){
     strcpy(buf, "Inf");
@@ -58,16 +58,16 @@ char * ftoa( float x, char * buf, int width, int precision ){
 }
   
 // Only gives an approximate result
-int simple_log10(float x){
+int simple_log10(double x){
   int exp;
   frexp(x, &exp);
   // Log10(2) = 0.30103
-  float exp10 = exp * 0.30103;
+  double exp10 = exp * 0.30103;
   return exp10;
 }
 
-float simple_pow10(int exp){
-  float y;
+double simple_pow10(int exp){
+  double y;
   if( exp < 0 ){
     exp += 38;
     y = 1e-38;
