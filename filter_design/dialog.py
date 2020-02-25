@@ -33,26 +33,36 @@ def get_params():
   ws = float(input("Stopband Frequency? "))/nyquist
   gstop = float(input("Min Stopband Attenuation? (in dB) "))
   gpass = float(input("Max Passband Ripple? (in dB) "))
-  return((wp, ws, gstop, gpass))
+  params = dict()
+  params['ws']=ws
+  params['wp']=wp
+  params['gstop']=gstop
+  params['gpass']=gpass
+  return(params)
 
 def design(params):
   print(params)
   while(1): # Loop until we're happy with our parameters
-    wp = params[0]
-    ws = params[1]
-    gstop = params[2]
-    gpass = params[3]
-    print(wp, ws, gstop, gpass)
+    wp = params['wp']
+    ws = params['ws']
+    gstop = params['gstop']
+    gpass = params['gpass']
+    print(params)
     if wp < ws:
       btype = 'lowpass'
     else:
       btype = 'highpass'
     print(f'This is a {btype} filter.')
     
-    cheby1 = sig.cheb1ord(wp=wp, ws=ws, gpass=gpass, gstop=gstop)
-    cheby2 = sig.cheb2ord(wp, ws, gpass, gstop)
-    butter = sig.buttord(wp, ws, gpass, gstop)
-    elliptic = sig.ellipord(wp, ws, gpass, gstop)
+    # Calculate the orders of each filter type
+    cheby1 = sig.cheb1ord(  
+          params['wp'], params['ws'], params['gpass'], params['gstop'])
+    cheby2 = sig.cheb2ord(
+          params['wp'], params['ws'], params['gpass'], params['gstop'])
+    butter = sig.buttord(
+          params['wp'], params['ws'], params['gpass'], params['gstop'])
+    elliptic = sig.ellipord(
+          params['wp'], params['ws'], params['gpass'], params['gstop'])
     
     x = int(input(F'''Please select an implementation:
     1: Chebyshev type I ({cheby1[0]} order, corner at {cheby1[1]*nyquist} Hz)
@@ -62,17 +72,17 @@ def design(params):
     5: Choose new design constraints
     '''))
     if x == 1:
-      sos = sig.cheby1(N=cheby1[0], rp=wp , Wn=cheby1[1], 
+      sos = sig.cheby1(N=cheby1[0], rp=params['wp'] , Wn=cheby1[1], 
                       btype=btype, output='sos' )
     elif x == 2:
-      sos = sig.cheby2(N=cheby2[0], rs=ws , Wn=cheby2[1], 
+      sos = sig.cheby2(N=cheby2[0], rs=params['ws'] , Wn=cheby2[1], 
                       btype=btype, output='sos' )
     elif x == 3:
       sos = sig.butter(N=butter[0], Wn=butter[1], 
                       btype=btype, output='sos' )
     elif x == 4:
-      sos = sig.ellip(N=elliptic[0], rp=wp, rs=ws, Wn=elliptic[1], 
-                      btype=btype, output='sos' )
+      sos = sig.ellip(N=elliptic[0], rp=params['wp'], rs=params['ws'], 
+      Wn=elliptic[1], btype=btype, output='sos' )
     else:
       params = get_params()
       continue
@@ -105,13 +115,16 @@ while(1): # Loop until we're happy with our filter
   w = np.linspace(0, nyquist, len(f))
   plt.subplot(121)
   plt.plot(data, label="Unfiltered")
+  bottom,top = plt.ylim()
   plt.title("Signal")
+  # Despite the initial conditions, this still starts near 0
   plt.plot(clean, label="Filtered")
+  plt.ylim(bottom,top)
   plt.legend(loc="best")
   plt.subplot(122)
-  plt.semilogy(w,f, label="Unfiltered")
+  plt.semilogy(w,np.absolute(f), label="Unfiltered")
   g = fft.rfft(clean)
-  plt.semilogy(w,g, label="Filtered")
+  plt.semilogy(w,np.absolute(g), label="Filtered")
   plt.title("Frequency Composition")
   plt.legend(loc="best")
   plt.show()
@@ -128,8 +141,8 @@ def save_sos(params, filtername, coef ):
   
   # Write the parameters in a comment
   f.write(F"""\n/*  Cascaded Second-Order System
-Passband: {params.wp*nyquist}Hz, {params.gpass}dB ripple.
-Stopband: {params.wp*nyquist}Hz, {params.gstop}dB attenuation.
+Passband: {params['ws']*nyquist}Hz, {params['gpass']}dB ripple.
+Stopband: {params['wp']*nyquist}Hz, {params['gstop']}dB attenuation.
 */""")
   # Write the coeffecients in a constant struct array
   n = np.shape(coef)[0]
