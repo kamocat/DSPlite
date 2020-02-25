@@ -22,7 +22,7 @@ const int analogInPin = A0;  // Analog input pin that the potentiometer is attac
 const int analogOutPin = 9; // Analog output pin that the LED is attached to
 
 int sensorValue = 0;        // value read from the pot
-float smooth = 0;
+double smooth = 0;
 
 IIRfilter filter(cheby1_10hz, sizeof(cheby1_10hz));
 
