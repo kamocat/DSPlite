@@ -16,10 +16,8 @@ There were three notable exceptions:
     - Remove noise: Use a low-pass filter
     - Remove DC offset: Use a high-pass filter
     - Take the derivative? Use Savitsky-Golay
-3. Determine the cutoff frequency
-4. Create the filter coeffecients using Python
-5. Test the filter on the captured data
-6. Include the filter in the Arduino code
+3. Use the filter design tool (dsplite.py) to select and test a filter
+4. Include the filter in the Arduino code
 
 ## Installation:
 This library should be installed in your Arduino libraries directory. 
@@ -52,13 +50,4 @@ This library should be installed in your Arduino libraries directory.
 - Dynamic filter generation: Filters here are designed to be low-memory, which puts them in flash storage rather than RAM. This means they must be predefined before you compile. The side-effect of this is we can define the filters using Python and test them on captured data to see if they actually do what we want, before deploying them onto a microcontroller.
 
 ## Future plans
-I would like to make a Python program to capture data from the Arduino and help in the filter design process. It would go something like this:
-1. Capture data from the Arduino
-2. Perform an FFT on the data
-3. Display the captured data and the FFT
-4. Design and test the filter (Repeat as necessary)
-    1. Graphically select the frequencies you want to remove
-    2. Design a filter to accomplish this
-    3. Test the filter on the the captured data (display time domain and frequency domain for before and after the filter)
-8. Save the filter coeffecients in a header file
-9. Generate a sketch that prints the data and the filtered data (so it can be plotted)
+The filter design tool doesn't currently create Savitsky-Golay coeffecients. Since this is a different sort of task, it would be nice to have a seperate Python script to do this.
