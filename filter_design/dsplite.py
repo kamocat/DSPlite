@@ -12,7 +12,7 @@ parser.add_argument('filename', help='Sample data for designing and testing filt
 parser.add_argument('-f', help='Sample frequency (how fast the data was recorded, in samples per second)', type=float)
 args = parser.parse_args()
 print("Loading file...")
-nyquist = 1/pi
+nyquist = 1
 if args.f:
   nyquist = nyquist * args.f/2
 
@@ -24,31 +24,30 @@ plt.plot(data)
 plt.title("Input Waveform")
 plt.subplot(122)
 f = fft.rfft(data)
-w = np.linspace(0, nyquist*pi, len(f))
+w = np.linspace(0, nyquist, len(f))
 plt.semilogy(w, np.absolute(f))
 plt.title("Frequency Components")
 plt.show()
 
 def get_params():
-  wp = float(input("Passband Frequency? "))/(nyquist*pi)
-  ws = float(input("Stopband Frequency? "))/(nyquist*pi)
+  wp = float(input("Passband Frequency? "))/nyquist
+  ws = float(input("Stopband Frequency? "))/nyquist
   gstop = float(input("Min Stopband Attenuation? (in dB) "))
   gpass = float(input("Max Passband Ripple? (in dB) "))
   params = dict()
-  params['ws']=ws
   params['wp']=wp
+  params['ws']=ws
   params['gstop']=gstop
   params['gpass']=gpass
   return(params)
 
 def design(params):
-  print(params)
   while(1): # Loop until we're happy with our parameters
+    print(params)
     wp = params['wp']
     ws = params['ws']
     gstop = params['gstop']
     gpass = params['gpass']
-    print(params)
     if wp < ws:
       btype = 'lowpass'
     else:
@@ -71,6 +70,7 @@ def design(params):
     3: Butterworth ({butter[0]} order, corner at {butter[1]*nyquist} Hz)
     4: Elliptic ({elliptic[0]} order, corner at {elliptic[1]*nyquist} Hz)
     5: Choose new design constraints
+    6: Quit
     '''))
     if x == 1:
       sos = sig.cheby1(N=cheby1[0], rp=params['gpass'] , Wn=cheby1[1], 
@@ -84,9 +84,11 @@ def design(params):
     elif x == 4:
       sos = sig.ellip(N=elliptic[0], rp=params['gpass'], rs=params['gstop'], 
       Wn=elliptic[1], btype=btype, output='sos' )
-    else:
+    elif x==5:
       params = get_params()
       continue
+    else:
+      exit()
     return(sos,params) #Break out of the loop
 
 
@@ -116,8 +118,8 @@ while(1): # Loop until we're happy with our filter
   #Plot before/after for time and frequency domain
   zi = sig.sosfilt_zi(sos) # Set initial conditions
   # Use the initial conditions to produce a sane result (not jumping from 0)
-  clean, zo = sig.sosfilt(sos, data, zi=zi)
-  w = np.linspace(0, nyquist*pi, len(f))
+  clean, zo = sig.sosfilt(sos, data, zi=zi*data[0])
+  w = np.linspace(0, nyquist, len(f))
   plt.subplot(121)
   plt.plot(data, label="Unfiltered")
   bottom,top = plt.ylim()
