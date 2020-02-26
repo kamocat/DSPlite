@@ -94,12 +94,16 @@ while(1): # Loop until we're happy with our filter
   sos,params = design(params)
 
   # Plot frequency response and group delay
-  w,h = sig.sosfreqz(sos)
   ax = plt.subplot(121)
+  pulse = np.zeros(1024)
+  pulse[0]=1
+  h = np.absolute(fft.rfft(sig.sosfilt(sos, pulse)))
+  w = np.linspace(0,1,len(h))
   plt.semilogy(w,h)
-  plt.title("Frequency response")
+  plt.title("FFT of impulse")
   ax = plt.subplot(122)
   w,grp = sig.group_delay(sig.sos2tf(sos))
+  w = np.linspace(0,1,len(w))
   ax.plot(w,grp)
   plt.title("Group delay")
   plt.show()
