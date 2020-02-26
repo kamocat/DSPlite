@@ -24,7 +24,7 @@ const int analogOutPin = 9; // Analog output pin that the LED is attached to
 int sensorValue = 0;        // value read from the pot
 double smooth = 0;
 
-IIRfilter filter(cheby1_10hz, sizeof(cheby1_10hz));
+SOSfilter filter(example_elliptic, sizeof(example_elliptic));
 
 void setup() {
   // initialize serial communications at 9600 bps:
