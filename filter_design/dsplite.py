@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 print("Welcome to the DSPLite Filter Design Tool.")
 import numpy as np
+from numpy import pi
 import scipy.signal as sig
 import scipy.fft as fft
 import matplotlib.pyplot as plt
@@ -11,7 +12,7 @@ parser.add_argument('filename', help='Sample data for designing and testing filt
 parser.add_argument('-f', help='Sample frequency (how fast the data was recorded, in samples per second)', type=float)
 args = parser.parse_args()
 print("Loading file...")
-nyquist = 1
+nyquist = 1/pi
 if args.f:
   nyquist = nyquist * args.f/2
 
@@ -23,14 +24,14 @@ plt.plot(data)
 plt.title("Input Waveform")
 plt.subplot(122)
 f = fft.rfft(data)
-w = np.linspace(0, nyquist, len(f))
+w = np.linspace(0, nyquist*pi, len(f))
 plt.semilogy(w, np.absolute(f))
 plt.title("Frequency Components")
 plt.show()
 
 def get_params():
-  wp = float(input("Passband Frequency? "))/nyquist
-  ws = float(input("Stopband Frequency? "))/nyquist
+  wp = float(input("Passband Frequency? "))/(nyquist*pi)
+  ws = float(input("Stopband Frequency? "))/(nyquist*pi)
   gstop = float(input("Min Stopband Attenuation? (in dB) "))
   gpass = float(input("Max Passband Ripple? (in dB) "))
   params = dict()
@@ -72,16 +73,16 @@ def design(params):
     5: Choose new design constraints
     '''))
     if x == 1:
-      sos = sig.cheby1(N=cheby1[0], rp=params['wp'] , Wn=cheby1[1], 
+      sos = sig.cheby1(N=cheby1[0], rp=params['gpass'] , Wn=cheby1[1], 
                       btype=btype, output='sos' )
     elif x == 2:
-      sos = sig.cheby2(N=cheby2[0], rs=params['ws'] , Wn=cheby2[1], 
+      sos = sig.cheby2(N=cheby2[0], rs=params['gstop'] , Wn=cheby2[1], 
                       btype=btype, output='sos' )
     elif x == 3:
       sos = sig.butter(N=butter[0], Wn=butter[1], 
                       btype=btype, output='sos' )
     elif x == 4:
-      sos = sig.ellip(N=elliptic[0], rp=params['wp'], rs=params['ws'], 
+      sos = sig.ellip(N=elliptic[0], rp=params['gpass'], rs=params['gstop'], 
       Wn=elliptic[1], btype=btype, output='sos' )
     else:
       params = get_params()
@@ -100,7 +101,7 @@ while(1): # Loop until we're happy with our filter
   h = np.absolute(fft.rfft(sig.sosfilt(sos, pulse)))
   w = np.linspace(0,1,len(h))
   plt.semilogy(w,h)
-  plt.title("FFT of impulse")
+  plt.title("Frequency Response")
   ax = plt.subplot(122)
   w,grp = sig.group_delay(sig.sos2tf(sos))
   w = np.linspace(0,1,len(w))
@@ -116,7 +117,7 @@ while(1): # Loop until we're happy with our filter
   zi = sig.sosfilt_zi(sos) # Set initial conditions
   # Use the initial conditions to produce a sane result (not jumping from 0)
   clean, zo = sig.sosfilt(sos, data, zi=zi)
-  w = np.linspace(0, nyquist, len(f))
+  w = np.linspace(0, nyquist*pi, len(f))
   plt.subplot(121)
   plt.plot(data, label="Unfiltered")
   bottom,top = plt.ylim()
