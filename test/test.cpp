@@ -1,5 +1,5 @@
 //test suite
-#include "../DSPlite.h"
+#include "../src/DSPlite.h" 
 #include "Filters.h"
 #include <iostream>
 #include <fstream>
@@ -8,6 +8,7 @@
 #include <complex>
 
 void TestSOS(void);
+void TestIIR(void);
 
 /** Zeros, poles, gain.
 
@@ -42,13 +43,14 @@ ZPK::ZPK(const SOSfilter &coef){
 void PlotZP(void);
 
 int main( int argc, char ** argv){
-    TestSOS();
+    //TestSOS();
+    TestIIR();
     //PlotZP();
     return 0;
 }
 
 void PlotZP(void){
-    SOSfilter filter(cheby1_10hz, sizeof(cheby1_10hz));
+    SOSfilter filter(example_elliptic, sizeof(example_elliptic));
     ZPK zp(filter);
     for( int i = 0; i < zp.poles.size(); ++i ){
       std::cout<<"w="<<std::arg(zp.poles[i])/3.141592<<"\u03C0" //pi char
@@ -58,20 +60,27 @@ void PlotZP(void){
 
 
 void TestSOS(void){
-    SOSfilter filter(butter_2hz, sizeof(butter_2hz));
-    int size = 2000;
+    SOSfilter filter(example_elliptic, sizeof(example_elliptic));
+    int size = 200;
     double val = 100;
     std::ofstream log;
     log.open("step.csv");
+    filter.Reset(val);
     for( int i = 1; i < size; ++i){
         log<<filter.Process(val)<< std::endl;
     }
     log.close();
-    double n = 5;
-    filter.Reset(5);
-    std::cout<<"Reset to "<<n<<std::endl<<"Results: ";
-    for( int i = 0; i < 3; ++i ){
-        std::cout<<filter.Process(n)<<" ";
+}
+
+void TestIIR(void){
+    IIRfilter filter(simple2, sizeof(simple2));
+    int size = 200;
+    double val = 100;
+    std::ofstream log;
+    log.open("step.csv");
+    filter.Reset(val);
+    for( int i = 1; i < size; ++i){
+        log<<filter.Process(val)<< std::endl;
     }
-    std::cout<<std::endl;
+    log.close();
 }

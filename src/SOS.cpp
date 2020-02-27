@@ -13,28 +13,30 @@ double kernel(double in, const struct SOSystem &coef, double * mem){
 }
 
 double SOSfilter::Process(double sample){
-    double y = 1;
+    double y = sample;
     for(int i = 0; i < len; ++i){
-        y *= kernel(sample, h[i], x+i+i);
+        // Each stage processes the output of the previous
+        y = kernel(y, h[i], x+i+i);
     }
     return y;
 }
 
-double SOSfilter::Stability(void){
-    //FIXME: calculate stability
-    return 1;
-}
+/** 
+Steady-state equations::
+  z = val*a0 - z(a1+a2)
+  y = z*(b0 + b1 + b2)
 
-/** FIXME: I don't think this works properly */
+Solving for z, we get::
+  z = val * a0 / (1 + a1 + a2)
+*/
+
 void SOSfilter::Reset(double val=0.){
-    double a = Stability();
-    // Calculate the steady-state condition of a one-element feedback
-    // steady = input + steady*(a) ===> steady = input / (1-a)
-    val = val / (1-a);
-    // Reset the internal state
-    int len2 = len * 2;
-    for(int i = 0; i < len2; ++i){
-        x[i]=val;
+    int k = 0;
+    for(int i = 0; i < len; ++i){
+        double z = val * h[i].a0 / (1 + h[i].a1 + h[i].a2);
+        x[k++]=z; // first memory element
+        x[k++]=z; // second memory element
+        val = z * (h[i].b0 + h[i].b1 + h[i].b2);
     }
 }
 
