@@ -19,7 +19,6 @@ public:
     SOSfilter(const SOSfilter &copy);
     void Reset(double val);
     double Process(double sample);
-    double Stability(void);
     ~SOSfilter(void);
     friend class ZPK;
 private:
