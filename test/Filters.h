@@ -13,3 +13,7 @@ const struct SOSystem simple[] = {
 {2, 0, 0, 1, 0.5, .5},
 {2, 0, 0, 1, 0.5, .5},
 };
+
+const double simple2[] = {
+1, 3, .5, 0, .5, 0, .5, 0, .5, 0,
+};

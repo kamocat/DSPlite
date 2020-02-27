@@ -30,7 +30,7 @@ double IIRfilter::Process(double sample){
 
 void IIRfilter::Reset(double val=0.){
     double a = 1;
-    for(int i = 0; i < len; ++i){
+    for(int i = 1; i <= len; ++i){
         a += h[2*i];
     }
     // Calculate the steady-state internal value

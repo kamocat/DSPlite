@@ -8,6 +8,7 @@
 #include <complex>
 
 void TestSOS(void);
+void TestIIR(void);
 
 /** Zeros, poles, gain.
 
@@ -42,7 +43,8 @@ ZPK::ZPK(const SOSfilter &coef){
 void PlotZP(void);
 
 int main( int argc, char ** argv){
-    TestSOS();
+    //TestSOS();
+    TestIIR();
     //PlotZP();
     return 0;
 }
@@ -59,6 +61,19 @@ void PlotZP(void){
 
 void TestSOS(void){
     SOSfilter filter(example_elliptic, sizeof(example_elliptic));
+    int size = 200;
+    double val = 100;
+    std::ofstream log;
+    log.open("step.csv");
+    filter.Reset(val);
+    for( int i = 1; i < size; ++i){
+        log<<filter.Process(val)<< std::endl;
+    }
+    log.close();
+}
+
+void TestIIR(void){
+    IIRfilter filter(simple2, sizeof(simple2));
     int size = 200;
     double val = 100;
     std::ofstream log;
