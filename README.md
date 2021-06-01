@@ -48,6 +48,3 @@ This library should be installed in your Arduino libraries directory.
 - Signal generation: Use the math library for sine() or whatever you need.
 - Peak-detection: You can design a filter for local peak detection, but you must know something about the frequency components of the signal. Savitsky-Golay with a second-derivative might be a nice choice.
 - Dynamic filter generation: Filters here are designed to be low-memory, which puts them in flash storage rather than RAM. This means they must be predefined before you compile. The side-effect of this is we can define the filters using Python and test them on captured data to see if they actually do what we want, before deploying them onto a microcontroller.
-
-## Future plans
-The filter design tool doesn't currently create Savitsky-Golay coeffecients. Since this is a different sort of task, it would be nice to have a seperate Python script to do this.
