@@ -3,6 +3,7 @@
 
 #include <inttypes.h>
 
+/* cascaded Second Order System */
 struct SOSystem{
     double b0;
     double b1;
@@ -12,19 +13,18 @@ struct SOSystem{
     double a2;
 };
 
-/* cascaded Second Order System */
-class SOSfilter{
-public:
-    SOSfilter(const struct SOSystem * coeffecients, uint8_t size);
-    SOSfilter(const SOSfilter &copy);
-    void Reset(double val);
-    double Process(double sample);
-    ~SOSfilter(void);
-    friend class ZPK;
-private:
+struct SOSfilter{
     const struct SOSystem * h; // array of second-order coeffecients
     uint8_t len;
     double * x;
 };
+
+void SOSInit(struct SOSfilter * s, const struct SOSystem * coeffecients, uint8_t size);
+
+void SOSReset(struct SOSfilter * s, double val);
+
+double SOSProcess(struct SOSfilter * s, double sample);
+
+void SOSDelete(struct SOSfilter * s);
 
 #endif

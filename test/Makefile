@@ -3,7 +3,7 @@ SRC=../src
 all: build plot
 
 build:
-	g++ test.cpp $(SRC)/SOS.cpp $(SRC)/FIR.cpp $(SRC)/IIR.cpp $(SRC)/LinearRegression.cpp -ggdb -o filt.out
+	g++ test.cpp $(SRC)/SOS.c -ggdb -o filt.out
 	./filt.out
 	
 plot:

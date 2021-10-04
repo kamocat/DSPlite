@@ -121,7 +121,7 @@ while(1): # Loop until we're happy with our filter
   clean, zo = sig.sosfilt(sos, data, zi=zi*data[0])
   w = np.linspace(0, nyquist, len(f))
   plt.subplot(121)
-  plt.plot(data, label="Unfiltered")
+  plt.plot(data, ',', label="Unfiltered")
   bottom,top = plt.ylim()
   plt.title("Signal")
   # Despite the initial conditions, this still starts near 0
