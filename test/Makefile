@@ -11,3 +11,7 @@ plot:
 
 float:
 	g++ test2.cpp ../ftoa.cpp -ggdb -o float.out
+
+hist:
+	g++ histogram_test.cpp $(SRC)/Histogram.cpp -ggdb -o hist.out
+	./hist.out
