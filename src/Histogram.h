@@ -13,6 +13,7 @@ public:
     int16_t Mode(void);
     int16_t Median(void);
     int16_t GaussianEstimate(void);
+    void Print(void);
     ~Histogram(void);
 private:
     int16_t offset;
