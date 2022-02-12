@@ -13,5 +13,5 @@ float:
 	g++ test2.cpp ../ftoa.cpp -ggdb -o float.out
 
 hist:
-	g++ histogram_test.cpp $(SRC)/Histogram.cpp -ggdb -Og -o hist.out
+	g++ -DDEBUG_HISTOGRAM histogram_test.cpp $(SRC)/Histogram.cpp -ggdb -Og -o hist.out
 	./hist.out

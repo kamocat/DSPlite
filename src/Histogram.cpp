@@ -112,7 +112,7 @@ int16_t Histogram::StandardDeviation(void){
      return( (upper-lower)/2);
 }
 
-#if 1
+#ifdef DEBUG_HISTOGRAM
 #include <iostream>
 
 void Histogram::Print(void){
