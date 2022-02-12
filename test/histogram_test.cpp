@@ -2,6 +2,7 @@
 #include <iostream>
 #include <random>
 #include <cmath>
+#include <fstream>
 
 void test_rebalance(void){
     Histogram h(4);
@@ -42,9 +43,35 @@ void test_shape(void){
     std::cout<<"Standard Deviation: "<<h.StandardDeviation()<<std::endl;
 }
 
+void test_convergence_rate(void){
+    std::ofstream log;
+    log.open("converge.csv");
+    std::random_device rd{};
+    std::mt19937 gen{rd()};
+    // values near the mean are the most likely
+    // standard deviation affects the dispersion of generated values from the mean
+    std::normal_distribution<> d{100,200};
+    Histogram h(600);
+    long long a = 0;
+    int qty = 1000;
+    double y = 0;
+    log<<"iteration mean median filtered"<<std::endl;
+    for(auto i=0; i < qty; ++i){
+      int x = std::round(d(gen));
+      a += x;
+      h.Process(x);
+      y += (x-y)*0.005; // First-order lowpass filter
+      if(i>5){
+        log<<i<<", "<<a/(i+1)<<", "<<h.Median()<<", "<<y<<std::endl;
+      }
+    }
+    log.close();
+}
+
+
 int main( int argc, char ** argv)
 {
 
-    test_shape();
+    test_convergence_rate();
     return 0;
 }
