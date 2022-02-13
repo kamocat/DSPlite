@@ -2,13 +2,13 @@
 
 Histogram::Histogram(uint16_t l){
     size = l;
-    bin = new uint16_t[size];
+    bin = new int16_t[size];
     Reset();
 }
 
 Histogram::Histogram(const Histogram &copy){
     size = copy.size;
-    bin = new uint16_t[size];
+    bin = new int16_t[size];
     Reset();
 }
 
@@ -25,52 +25,39 @@ void Histogram::Reset(void){
 }
 
 void Histogram::Process(int16_t sample){
-    ++count;
+    sum += sample;
     int16_t x = sample - offset;
-    if( 1 == count ){
-        x = size / 2;
-        offset = sample - x;
-        bin[x] += 1;
+    if( count < size ){
+        bin[count]=sample;
+    } else if( count == size ){
+        offset = this->Mean() - size/2;
+        int16_t * tmp = new int16_t[size];
+        for(auto i=0; i<count; ++i){
+            x = bin[i] - offset;
+            if(x<0)
+                tmp[0]++;
+            else if(x>=size)
+                tmp[size-1]++;
+            else
+                tmp[x]++;
+        }
+        delete bin;
+        bin = tmp;
     } else if( x <= 0 ){
         bin[0] = bin[0] + 1;
-        //Rebalance if more than half in the lowest bin
-        if(bin[0] > count/2){
-            int o = size/2;
-            offset -= o;
-            int i = size-1;
-            for(;i<=o; --i){
-                bin[size-1] += bin[i];
-                bin[i] = bin[i-o];
-            }
-            for(;i<=0;--i){
-                bin[i]=0;
-            }
-        }
     } else if( x >= (size-1) ){
         bin[size-1] += 1;
-        //Rebalance if more than half in the highest bin
-        if(bin[size-1] > count/2){
-            int o = size/2;
-            offset += o;
-            int i;
-            int tmp = bin[o];
-            for(i=0;i<o; ++i){
-                tmp += bin[i];
-                bin[i] = bin[i+o];
-            }
-            bin[0]=tmp;
-            for(;i<size;++i){
-                bin[i]=0;
-            }
-        }
     } else {
         bin[x] = bin[x] + 1;
     }
+    ++count;
 }
 
 int16_t Histogram::Median(void){
     int i;
     int16_t x = 0;
+    if(count<=size)
+        return(this->Mean());
     for(i=0; i < size; ++i){
         x += bin[i];
         if( x >= count/2)
@@ -110,6 +97,10 @@ int16_t Histogram::StandardDeviation(void){
          }
      }
      return( (upper-lower)/2);
+}
+
+int16_t Histogram::Mean(void){
+    return(sum/count);
 }
 
 #ifdef DEBUG_HISTOGRAM

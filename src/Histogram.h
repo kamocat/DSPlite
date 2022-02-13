@@ -12,14 +12,15 @@ public:
     int16_t StandardDeviation(void);
     int16_t Mode(void);
     int16_t Median(void);
-    int16_t GaussianEstimate(void);
+    int16_t Mean(void);
     void Print(void);
     ~Histogram(void);
 private:
     int16_t offset;
     uint16_t size;
     uint16_t count;
-    uint16_t * bin;
+    int16_t * bin;
+    int32_t sum;
 };
 
 #endif

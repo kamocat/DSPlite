@@ -51,7 +51,7 @@ void test_convergence_rate(void){
     // values near the mean are the most likely
     // standard deviation affects the dispersion of generated values from the mean
     std::normal_distribution<> d{100,200};
-    Histogram h(600);
+    Histogram h(100);
     long long a = 0;
     int qty = 1000;
     double y = 0;
