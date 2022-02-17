@@ -4,6 +4,19 @@
 #include <cmath>
 #include <fstream>
 
+void test_sorting(void){
+    Histogram h(10);
+    const int qty = 10;
+    int x[qty] = {10,9,8,7,6,5,4,3,2,1};
+    long a = 0;
+    for(auto i=0; i < qty; ++i){
+      a += x[i];
+      h.Process(x[i]);
+    }
+    h.Sort();
+    h.Print();
+}
+
 void test_rebalance(void){
     Histogram h(4);
     const int qty = 9;
@@ -13,6 +26,7 @@ void test_rebalance(void){
       a += x[i];
       h.Process(x[i]);
       h.Print();
+      std::cout<<"Median: "<<h.Median()<<std::endl;
     }
     a /= qty;
     std::cout<<"Mean: "<<a<<std::endl;
@@ -72,6 +86,6 @@ void test_convergence_rate(void){
 int main( int argc, char ** argv)
 {
 
-    test_convergence_rate();
+    test_sorting();
     return 0;
 }

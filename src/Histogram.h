@@ -14,6 +14,7 @@ public:
     int16_t Median(void);
     int16_t Mean(void);
     void Print(void);
+    void Sort(void);//TODO: Move to private after testing
     ~Histogram(void);
 private:
     int16_t offset;

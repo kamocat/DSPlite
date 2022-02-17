@@ -15,4 +15,4 @@ float:
 hist:
 	g++ -DDEBUG_HISTOGRAM histogram_test.cpp $(SRC)/Histogram.cpp -ggdb -Og -o hist.out
 	./hist.out
-	gnuplot hist_plot
+	#gnuplot hist_plot
