@@ -108,11 +108,10 @@ int16_t Histogram::Mean(void){
 }
 
 static void merge(int16_t * a, int alen, int blen){
-    if(!alen || !blen )
-        return;
     //Assumptions:
     //  a and b are sorted lists
     //  a address space flows directly into b
+    //  alen and blen are positive
     int16_t * b = a + alen;
     int16_t * c = b + blen - 1;
     for(; a<b; ++a){
@@ -129,6 +128,7 @@ static void merge(int16_t * a, int alen, int blen){
         }
     }
 }
+#include <iostream>
 void Histogram::Sort(void){
     if(count>size)
         return;
@@ -147,10 +147,13 @@ void Histogram::Sort(void){
         for(i=0; i<(count-step); i+=step){
             merge(bin+i,step/2,step/2);
         }
-        int step2 = count-i;
-        merge(bin+i, step2/2, (step2+1)/2 );
+        if(i<count-1){
+            int step = count-i;
+            merge(bin+i, step-step/2, step/2 );
+        }
         this->Print();
     }
+    merge(bin, step/2, count-step/2 );
 }
 
 #ifdef DEBUG_HISTOGRAM
