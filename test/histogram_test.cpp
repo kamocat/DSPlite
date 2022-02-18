@@ -5,13 +5,9 @@
 #include <fstream>
 
 void test_sorting(void){
-    Histogram h(10);
-    const int qty = 10;
-    int x[qty] = {10,9,8,7,6,5,4,3,2,1};
-    long a = 0;
-    for(auto i=0; i < qty; ++i){
-      a += x[i];
-      h.Process(x[i]);
+    Histogram h(100);
+    for(auto i=15; i; --i){
+      h.Process(i);
     }
     h.Sort();
     h.Print();

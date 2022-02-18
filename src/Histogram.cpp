@@ -108,26 +108,24 @@ int16_t Histogram::Mean(void){
 }
 
 static void merge(int16_t * a, int alen, int blen){
+    if(!alen || !blen )
+        return;
     //Assumptions:
     //  a and b are sorted lists
     //  a address space flows directly into b
-    //  alen and blen are positive
-    if( a[alen]>=a[alen-1])
-        return; // Lists are already combined
-    else{
-        int16_t * b = a + alen;
-        int j=0;
-        for(int i = 0; i<alen+blen-1; ++i){
-            if(a[i]<=b[j])
-                continue;
-            else{
-                // Swap the elements
-                int16_t tmp = a[i];
-                a[i]=b[j];
-                // Don't let j overrun the array
-                if(j<blen)
-                    ++j;
-            }
+    int16_t * b = a + alen;
+    int16_t * c = b + blen - 1;
+    for(; a<b; ++a){
+        if(*a<=*b)
+            continue;
+        else{
+            // Swap the elements
+            int16_t tmp = *a;
+            *a=*b;
+            *b=tmp;
+            // Don't let j overrun the array
+            if(b<c)
+                ++b;
         }
     }
 }
@@ -135,7 +133,7 @@ void Histogram::Sort(void){
     if(count>size)
         return;
     // Reduce overhead on the first merge
-    for(int i=0; i<(count-2); i+=2){
+    for(int i=0; i<(count-1); i+=2){
         int16_t tmp = bin[i];
         if(bin[i]>bin[i+1]){
             bin[i]=bin[i+1];
@@ -144,15 +142,13 @@ void Histogram::Sort(void){
     }
     this->Print();
     int step=4;
-    for(;step<count;step<<=2){
-        int i=0;
-        for(; i<(count-step); i+=step){
+    for(;step<count;step<<=1){
+        int i;
+        for(i=0; i<(count-step); i+=step){
             merge(bin+i,step/2,step/2);
         }
-        if(i<count){
-            int step = count-i;
-            merge(bin+i, step/2, (step+1)/2 );
-        }
+        int step2 = count-i;
+        merge(bin+i, step2/2, (step2+1)/2 );
         this->Print();
     }
 }
