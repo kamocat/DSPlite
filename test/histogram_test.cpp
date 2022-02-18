@@ -6,11 +6,17 @@
 
 void test_sorting(void){
     Histogram h(100);
-    for(auto i=15; i; --i){
-      h.Process(i);
+    for(auto j=2; j<32; ++j){
+        h.Reset();
+        for(auto i=j; i; --i){
+            h.Process(i);
+        }
+        h.Sort();
+        if(!h.Sorted()){
+            std::cout<<"Failed to sort list of qty "<<j<<" :\n";
+            h.Print();
+        }
     }
-    h.Sort();
-    h.Print();
 }
 
 void test_rebalance(void){
@@ -83,5 +89,6 @@ int main( int argc, char ** argv)
 {
 
     test_sorting();
+    test_convergence_rate();
     return 0;
 }

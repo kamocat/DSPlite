@@ -13,6 +13,6 @@ float:
 	g++ test2.cpp ../ftoa.cpp -ggdb -o float.out
 
 hist:
-	g++ -DDEBUG_HISTOGRAM histogram_test.cpp $(SRC)/Histogram.cpp -ggdb -Og -o hist.out
-	./hist.out
-	#gnuplot hist_plot
+	g++ -DDEBUG_HISTOGRAM histogram_test.cpp $(SRC)/Histogram.cpp -ggdb -Og -o test_hist.out
+	./test_hist.out
+	gnuplot plot_hist

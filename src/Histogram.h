@@ -3,6 +3,7 @@
 
 #include <inttypes.h>
 
+
 class Histogram{
 public:
     Histogram(uint16_t size);
@@ -15,6 +16,7 @@ public:
     int16_t Mean(void);
     void Print(void);
     void Sort(void);//TODO: Move to private after testing
+    bool Sorted(void);
     ~Histogram(void);
 private:
     int16_t offset;
