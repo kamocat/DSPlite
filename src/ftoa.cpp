@@ -135,28 +135,38 @@ char * dtoa( long x, char * buf ){
   }
   int magnitude = log10_helper(x);
   // Effectively a GoTo statement
-  // No breaks - execute through every subsequenty case
+  // No breaks - execute through every subsequent case
   switch(magnitude){
     case 9:
       *ptr++ = subn(x, 1000000000 );
+      [[fallthrough]];
     case 8:
       *ptr++ = subn(x, 100000000 );
+      [[fallthrough]];
     case 7:
       *ptr++ = subn(x, 10000000 );
+      [[fallthrough]];
     case 6:
       *ptr++ = subn(x, 1000000 );
+      [[fallthrough]];
     case 5:
       *ptr++ = subn(x, 100000 );
+      [[fallthrough]];
     case 4:
       *ptr++ = subn(x, 10000 );
+      [[fallthrough]];
     case 3:
       *ptr++ = subn(x, 1000 );
+      [[fallthrough]];
     case 2:
       *ptr++ = subn(x, 100 );
+      [[fallthrough]];
     case 1:
       *ptr++ = subn(x, 10 );
+      [[fallthrough]];
     case 0:
       *ptr++ = subn(x, 1 );
+      [[fallthrough]];
     default:
       *ptr = 0; // termination character
   }

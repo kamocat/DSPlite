@@ -6,5 +6,6 @@
 #include "SOS.h"
 #include "LinearRegression.h"
 #include "Histogram.h"
+#include "ftoa.h"
 
 #endif
