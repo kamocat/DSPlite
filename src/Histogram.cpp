@@ -60,7 +60,9 @@ int16_t Histogram::Median(void){
     int16_t x = 0;
     if(count<=size){
         this->Sort();
-        return bin[count/2];
+        x = bin[count/2];
+        x += bin[(count+1)/2];
+        return x/2;
     }
     for(i=0; i < size; ++i){
         x += bin[i];
@@ -80,27 +82,28 @@ int16_t Histogram::Mode(void){
 }
 
 int16_t Histogram::StandardDeviation(void){
-     int upper, lower, i;
-     uint16_t x = 0;
-     //68.2% of the values are within 1 standard deviation of the mean
-     uint16_t tail = (1-0.682)*0.5;
-     tail *= count;
-     for(i=0; i<size; ++i){
-         x += bin[i];
-         if(x > tail){
-             lower = i;
-             break;
+    if(count <= size){ // True standard deviation
+        int32_t m = this->Mean();
+        uint32_t a = 0;
+        for(int i=0; i<count; ++i){
+            int32_t s = bin[i]-m;
+            s = s*s;
+            a += s;
+        }
+        return a/count;
+    } else if((bin[0]+bin[size-1])>= count*(1-0.682)){
+        //68.2% of the values are within 1 standard deviation of the mean
+        return size; // Distribution is too wide for array
+    } else{ // Outliers truncated (underestimate)
+         int16_t o = this->Mean() - offset;
+         uint32_t a = 0;
+         for(int i=0; i<size; ++i){
+             int32_t s = (i-o);
+             s = s*s;
+             a += bin[i]*s;
          }
-     }
-     x = 0;
-     for(i=size-1; i; --i){
-         x += bin[i];
-         if(x > tail){
-             upper = i;
-             break;
-         }
-     }
-     return( (upper-lower)/2);
+         return a/size;
+    }
 }
 
 int16_t Histogram::Mean(void){

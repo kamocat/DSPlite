@@ -5,5 +5,6 @@
 #include "IIR.h"
 #include "SOS.h"
 #include "LinearRegression.h"
+#include "Histogram.h"
 
 #endif
