@@ -51,7 +51,7 @@ void test_shape(void){
       a += x;
       h.Process(x);
     }
-    h.Print();
+    //h.Print();
     a /= qty;
     std::cout<<"Mean: "<<a<<std::endl;
     std::cout<<"Median: "<<h.Median()<<std::endl;
@@ -66,7 +66,7 @@ void test_convergence_rate(void){
     std::mt19937 gen{rd()};
     // values near the mean are the most likely
     // standard deviation affects the dispersion of generated values from the mean
-    std::normal_distribution<> d{100,200};
+    std::normal_distribution<> d{100,100};
     Histogram h(100);
     long long a = 0;
     int qty = 1000;
@@ -74,11 +74,10 @@ void test_convergence_rate(void){
     log<<"iteration mean median filtered"<<std::endl;
     for(auto i=0; i < qty; ++i){
       int x = std::round(d(gen));
-      a += x;
       h.Process(x);
       y += (x-y)*0.005; // First-order lowpass filter
       if(i>5){
-        log<<i<<", "<<a/(i+1)<<", "<<h.Median()<<", "<<y<<std::endl;
+        log<<i<<", "<<h.Mean()<<", "<<h.Median()<<", "<<y<<std::endl;
       }
     }
     log.close();

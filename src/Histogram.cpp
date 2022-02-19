@@ -1,4 +1,5 @@
 #include "Histogram.h"
+#include <iostream>
 
 Histogram::Histogram(uint16_t l){
     size = l;
@@ -30,25 +31,28 @@ void Histogram::Process(int16_t sample){
     } else if( count == size ){
         offset = sum/(count+1) - size/2;
         int16_t * tmp = new int16_t[size];
-        for(auto i=0; i<count; ++i){
-            int16_t x = bin[i] - offset;
-            if(x<0)
-                tmp[0]++;
-            else if(x>=size)
-                tmp[size-1]++;
-            else
-                tmp[x]++;
+        for(auto i=0; i<size; ++i){
+            tmp[i]=bin[i];
+            bin[i]=0;
         }
-        delete bin;
-        bin = tmp;
+        for(auto i=0; i<size; ++i){
+            int16_t x = tmp[i] - offset;
+            if(x<0)
+                ++bin[0];
+            else if(x>=size)
+                ++bin[size-1];
+            else
+                ++bin[x];
+        }
+        delete tmp;
     }
     int16_t x = sample - offset;
-    if( x <= 0 ){
-        bin[0] = bin[0] + 1;
-    } else if( x >= (size-1) ){
-        bin[size-1] += 1;
+    if( x < 0 ){
+        ++bin[0];
+    } else if( x >= size ){
+        ++bin[size-1];
     } else {
-        bin[x] = bin[x] + 1;
+        ++bin[x];
     }
     ++count;
 }
@@ -58,7 +62,7 @@ int16_t Histogram::Median(void){
     int16_t x = 0;
     int mid = count/2;
     if(count<=size){
-        this->Sort();
+        Sort();
         x = bin[mid];
         x += bin[count-mid];
         return x/2;
@@ -83,7 +87,7 @@ int16_t Histogram::Mode(void){
 
 int32_t Histogram::Variance(void){
     if(count <= size){ // True standard deviation
-        int32_t m = this->Mean();
+        int32_t m = Mean();
         uint32_t a = 0;
         for(int i=0; i<count; ++i){
             int32_t s = bin[i]-m;
@@ -92,7 +96,7 @@ int32_t Histogram::Variance(void){
         }
         return a/count;
     } else{ // Outliers truncated (underestimate)
-         int16_t o = this->Mean() - offset;
+         int16_t o = Mean() - offset;
          uint32_t a = 0;
          for(int i=0; i<size; ++i){
              int32_t s = (i-o);
