@@ -17,11 +17,9 @@ Histogram::~Histogram(void){
 }
 
 void Histogram::Reset(void){
-    for(int i = 0; i < size; ++i){
-        bin[i] = 0;
-    }
     count = 0;
     offset = 0;
+    sum = 0;
 }
 
 void Histogram::Process(int16_t sample){
@@ -58,30 +56,32 @@ void Histogram::Process(int16_t sample){
 int16_t Histogram::Median(void){
     int i;
     int16_t x = 0;
+    int mid = count/2;
     if(count<=size){
         this->Sort();
-        x = bin[count/2];
-        x += bin[(count+1)/2];
+        x = bin[mid];
+        x += bin[count-mid];
         return x/2;
     }
     for(i=0; i < size; ++i){
         x += bin[i];
-        if( x >= count/2)
+        if( x >= mid)
             break;
     }
     return (i + offset);
 }
 
 int16_t Histogram::Mode(void){
+    //FIXME: Doesn't work correctly for count<=size
     int16_t max = 0;
-    for(int i = 1; i < size; ++i){
+    for(int i = 1; i < size-1; ++i){
         if( bin[i] > bin[max] )
             max = i;
     }
     return (max + offset);
 }
 
-int16_t Histogram::StandardDeviation(void){
+int32_t Histogram::Variance(void){
     if(count <= size){ // True standard deviation
         int32_t m = this->Mean();
         uint32_t a = 0;
@@ -91,9 +91,6 @@ int16_t Histogram::StandardDeviation(void){
             a += s;
         }
         return a/count;
-    } else if((bin[0]+bin[size-1])>= count*(1-0.682)){
-        //68.2% of the values are within 1 standard deviation of the mean
-        return size; // Distribution is too wide for array
     } else{ // Outliers truncated (underestimate)
          int16_t o = this->Mean() - offset;
          uint32_t a = 0;
@@ -102,7 +99,7 @@ int16_t Histogram::StandardDeviation(void){
              s = s*s;
              a += bin[i]*s;
          }
-         return a/size;
+         return a/count;
     }
 }
 

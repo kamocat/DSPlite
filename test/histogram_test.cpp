@@ -34,7 +34,7 @@ void test_rebalance(void){
     std::cout<<"Mean: "<<a<<std::endl;
     std::cout<<"Median: "<<h.Median()<<std::endl;
     std::cout<<"Mode: "<<h.Mode()<<std::endl;
-    std::cout<<"Standard Deviation: "<<h.StandardDeviation()<<std::endl;
+    std::cout<<"Standard Deviation: "<<sqrt(h.Variance())<<std::endl;
 }
 
 void test_shape(void){
@@ -43,9 +43,9 @@ void test_shape(void){
     // values near the mean are the most likely
     // standard deviation affects the dispersion of generated values from the mean
     std::normal_distribution<> d{50,20};
-    Histogram h(60);
+    Histogram h(100);
     long long a = 0;
-    int qty = 1000;
+    int qty = 155;
     for(auto i=0; i < qty; ++i){
       int x = std::round(d(gen));
       a += x;
@@ -56,7 +56,7 @@ void test_shape(void){
     std::cout<<"Mean: "<<a<<std::endl;
     std::cout<<"Median: "<<h.Median()<<std::endl;
     std::cout<<"Mode: "<<h.Mode()<<std::endl;
-    std::cout<<"Standard Deviation: "<<h.StandardDeviation()<<std::endl;
+    std::cout<<"Standard Deviation: "<<sqrt(h.Variance())<<std::endl;
 }
 
 void test_convergence_rate(void){
@@ -89,6 +89,7 @@ int main( int argc, char ** argv)
 {
 
     test_sorting();
+    test_shape();
     test_convergence_rate();
     return 0;
 }

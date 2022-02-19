@@ -10,12 +10,12 @@ public:
     Histogram(const Histogram &copy);
     void Reset(void);
     void Process(int16_t sample);
-    int16_t StandardDeviation(void);
+    int32_t Variance(void);
     int16_t Mode(void);
     int16_t Median(void);
     int16_t Mean(void);
     void Print(void);
-    void Sort(void);//TODO: Move to private after testing
+    void Sort(void);
     bool Sorted(void);
     ~Histogram(void);
 private:
